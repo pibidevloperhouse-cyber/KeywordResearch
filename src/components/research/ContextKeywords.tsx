@@ -7,9 +7,7 @@ interface ContextKeywordsProps {
     keywords: string[];
 }
 
-/**
- * ContextKeywords: Displays secondary/extracted keywords for better context.
- */
+
 export default function ContextKeywords({ keywords }: ContextKeywordsProps) {
     return (
         <BaseCard
