@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Global Keyword Research App
 
-## Getting Started
+A Next.js application for keyword research across 5 regions (India, USA, UK, Canada, Australia). This app fetches data from **SerpApi** containing primary keywords, related searches, competitors, and "People Also Ask" questions.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+   (This should have been run automatically)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Configure API Key**
+   - Provide your SerpApi key in `.env.local`:
+     ```
+     SERPAPI_KEY=your_actual_api_key_here
+     ```
+   - Get a key from [SerpApi](https://serpapi.com/).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+   - Open [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **Multi-Region Analysis**: Automatically fetches data for IN, US, UK, CA, AU.
+- **4-Box Layout**: Displays Primary Keyword, Related Searches, Competitors, and PAA Questions.
+- **Premium UI**: Dark mode with glassmorphism effects.
+- **Parallel Fetching**: Fast data retrieval.
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/page.tsx`: Main frontend logic and UI.
+- `src/app/api/research/route.ts`: Backend API route that interfaces with SerpApi (replacing thePython script).
+- `src/app/globals.css`: Global styles and themes.
