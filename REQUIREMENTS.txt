@@ -1,0 +1,23 @@
+# System Requirements
+- Node.js 18.17.0 or later
+- npm (Node Package Manager)
+
+# Main Dependencies (Libraries)
+- next: 16.1.6 (Framework)
+- react: 19.2.3 (UI Library)
+- serpapi: ^2.2.1 (Search Engine API)
+- framer-motion: ^12.34.0 (Animations)
+- lucide-react: ^0.563.0 (Icons)
+- clsx: ^2.1.1 (Dynamic Classes)
+- tailwind-merge: ^3.4.0 (Tailwind Utilities)
+- tailwindcss: ^4 (Styling)
+
+# Required Environment Variables (.env.local)
+- SERPAPI_KEY: Your private API key from https://serpapi.com/
+- NEXT_PUBLIC_ADSENSE_ID: Your Google AdSense Publisher ID (format: ca-pub-XXXXXXXXXXXXXXXX)
+
+# Setup Commands
+1. Run 'npm install' to download all libraries.
+2. Create a '.env.local' file in the root directory.
+3. Add your SERPAPI_KEY and NEXT_PUBLIC_ADSENSE_ID to .env.local.
+4. Run 'npm run dev' to start the development server.
