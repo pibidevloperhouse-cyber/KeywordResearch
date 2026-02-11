@@ -27,18 +27,19 @@ export default function ResultsSummary({ globalNews }: ResultsSummaryProps) {
         <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-900/80 backdrop-blur-3xl border border-blue-500/20 rounded-3xl p-8 shadow-[0_0_50px_rgba(59,130,246,0.1)] relative overflow-hidden"
+            className="glass rounded-[2rem] p-10 shadow-[0_0_80px_rgba(34,211,238,0.1)] relative overflow-hidden"
         >
-            {/* Decorative background pulse */}
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] animate-pulse"></div>
+            {/* Decorative background pulses */}
+            <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] animate-pulse"></div>
 
-            <div className="flex items-center space-x-4 mb-8 relative z-10">
-                <div className="p-3 bg-blue-500/20 rounded-xl border border-blue-500/30">
-                    <Newspaper className="w-6 h-6 text-blue-400" />
+            <div className="flex items-center space-x-5 mb-10 relative z-10">
+                <div className="p-4 bg-cyan-500/20 rounded-2xl border border-cyan-500/30 shadow-inner">
+                    <Newspaper className="w-8 h-8 text-cyan-400" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">Top Headlines per Country</h2>
-                    <p className="text-sm text-slate-400 font-medium">The most relevant news from each major region</p>
+                    <h2 className="text-3xl font-black text-white tracking-tight font-outfit uppercase">Global Headlines</h2>
+                    <p className="text-slate-400 font-medium tracking-wide">The fastest-moving search stories across 5 major regions</p>
                 </div>
             </div>
 
@@ -51,23 +52,23 @@ export default function ResultsSummary({ globalNews }: ResultsSummaryProps) {
                             href={news.top_story.link}
                             target="_blank"
                             rel="noreferrer"
-                            whileHover={{ y: -5 }}
-                            className="group relative bg-slate-800/40 border border-slate-700/50 rounded-2xl p-5 transition-all hover:bg-slate-700/40 hover:border-blue-500/50 hover:shadow-lg shadow-blue-500/10"
+                            whileHover={{ y: -8, scale: 1.02 }}
+                            className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 transition-all hover:bg-white/10 hover:border-cyan-500/50 hover:shadow-[0_15px_30px_rgba(34,211,238,0.15)] h-full flex flex-col"
                         >
-                            <div className="absolute top-4 right-4 px-2.5 py-1 bg-blue-500/20 rounded-lg text-[10px] font-black text-blue-300 border border-blue-500/30 uppercase tracking-tighter shadow-sm">
+                            <div className="absolute top-4 right-4 px-3 py-1.5 bg-cyan-500/20 rounded-xl text-[10px] font-black text-cyan-300 border border-cyan-500/30 uppercase tracking-widest shadow-lg">
                                 {news.country}
                             </div>
-                            <div className="mt-6">
-                                <span className="text-[10px] text-blue-400/80 font-bold uppercase tracking-widest block mb-2">
+                            <div className="mt-8 flex-1 flex flex-col">
+                                <span className="text-[10px] text-cyan-400/80 font-black uppercase tracking-[0.2em] block mb-3">
                                     {typeof news.top_story.source === 'string' ? news.top_story.source : 'Source'}
                                 </span>
-                                <h4 className="text-sm font-bold text-slate-200 line-clamp-3 group-hover:text-blue-300 transition-colors leading-tight">
+                                <h4 className="text-sm font-bold text-slate-100 line-clamp-3 group-hover:text-cyan-200 transition-colors leading-relaxed font-outfit flex-1">
                                     {news.top_story.title}
                                 </h4>
-                                <div className="flex items-center justify-between mt-4">
-                                    <p className="text-[10px] text-slate-500 font-medium">{news.top_story.date}</p>
-                                    <div className="w-5 h-5 rounded-full bg-slate-700 group-hover:bg-blue-500/30 flex items-center justify-center transition-colors">
-                                        <div className="w-1.5 h-1.5 border-t border-r border-slate-400 group-hover:border-blue-400 transform rotate-45 ml-[-1px]"></div>
+                                <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">{news.top_story.date}</p>
+                                    <div className="w-6 h-6 rounded-full bg-slate-800/80 group-hover:bg-cyan-500 flex items-center justify-center transition-all duration-300 shadow-xl group-hover:shadow-cyan-500/50">
+                                        <div className="w-1.5 h-1.5 border-t-2 border-r-2 border-slate-400 group-hover:border-white transform rotate-45 ml-[-1px]"></div>
                                     </div>
                                 </div>
                             </div>

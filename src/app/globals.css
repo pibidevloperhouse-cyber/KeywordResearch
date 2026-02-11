@@ -1,15 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
+  --background: #020617;
   --foreground: #f8fafc;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   min-height: 100vh;
-  /* Premium dark gradient */
-  background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+  /* Premium Deep Space Gradient */
+  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 70%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit), sans-serif;
+}
+
+/* Custom Scrollbar for a premium look */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-hover:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }

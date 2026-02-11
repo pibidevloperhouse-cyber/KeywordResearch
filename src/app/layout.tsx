@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import AdSenseScript from "@/components/AdSenseScript";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -30,9 +30,12 @@ export default function RootLayout({
         <AdSenseScript />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-slate-950 text-slate-200`}
       >
-        {children}
+        <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none brightness-100 contrast-150"></div>
+        <div className="relative z-10">
+          {children}
+        </div>
       </body>
     </html>
   );
