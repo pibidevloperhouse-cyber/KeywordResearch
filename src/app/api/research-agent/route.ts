@@ -4,12 +4,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SERPAPI_KEY = process.env.SERPAPI_KEY;
 // Support separate API key for research, fallback to main key
-const GEMINI_API_KEY = process.env.RESEARCH_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
-const MODEL_NAME = process.env.RESEARCH_MODEL || "gemini-2.0-flash"; // Fallback to 2.0 if 2.5 is not available/standard
-
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI = (key: string) => new GoogleGenerativeAI(key);
 
 export async function POST(request: Request) {
+    const GEMINI_API_KEY = process.env.RESEARCH_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
+    const MODEL_NAME = process.env.RESEARCH_MODEL || "gemini-1.5-flash";
+
     if (!GEMINI_API_KEY) {
         return NextResponse.json({ error: "Missing Research Gemini API Key." }, { status: 500 });
     }
@@ -59,8 +59,9 @@ export async function POST(request: Request) {
             };
         }
 
-        // 2. Use Gemini 2.5 Flash to analyze research output
-        const model = genAI.getGenerativeModel({ model: MODEL_NAME }); // Using 2.0 as 2.5 is likely a user request/future model
+        // 2. Use Gemini 1.5 Flash to analyze research output
+        const client = genAI(GEMINI_API_KEY);
+        const model = client.getGenerativeModel({ model: MODEL_NAME });
 
         const prompt = `
             Analyze research for: "${topic}".

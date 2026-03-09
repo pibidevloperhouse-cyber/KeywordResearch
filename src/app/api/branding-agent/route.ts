@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Support separate API key for branding, fallback to main key
-const GEMINI_API_KEY = process.env.BRANDING_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
-const MODEL_NAME = process.env.BRANDING_MODEL || "gemini-1.5-pro"; // Fallback if gemini-3 is not standard
-
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI = (key: string) => new GoogleGenerativeAI(key);
 
 export async function POST(request: Request) {
+    const GEMINI_API_KEY = process.env.BRANDING_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
+    const MODEL_NAME = process.env.BRANDING_MODEL || "gemini-1.5-flash";
+
     if (!GEMINI_API_KEY) {
         return NextResponse.json({ error: "Missing Branding Gemini API Key." }, { status: 500 });
     }
@@ -19,8 +18,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Blog content is required" }, { status: 400 });
         }
 
-        // 3. Use Gemini 3 to match generated blog and score it
-        const model = genAI.getGenerativeModel({ model: MODEL_NAME }); // Using 1.5 Pro as placeholder for 'gemini-3'
+        // 3. Use Gemini 1.5 Flash to analyze blog content
+        const client = genAI(GEMINI_API_KEY);
+        const model = client.getGenerativeModel({ model: MODEL_NAME });
+
 
         const prompt = `
             Rate this blog on a scale 1-100 for brand alignment (Empathetic, Nurturing, Professional).
