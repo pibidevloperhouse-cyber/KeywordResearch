@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import AdSenseScript from "@/components/AdSenseScript";
+import Navbar from "@/components/Navbar";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -33,6 +34,7 @@ export default function RootLayout({
         className={`${outfit.variable} ${inter.variable} font-inter antialiased bg-slate-950 text-slate-200`}
       >
         <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none brightness-100 contrast-150"></div>
+        <Navbar />
         <div className="relative z-10">
           {children}
         </div>
