@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Activity } from "lucide-react";
+import { Search, Activity, Brain } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Professional Research Components (Plug-and-Play)
 import AdSense from "@/components/AdSense";
@@ -22,6 +23,9 @@ export default function Home() {
   const [totalCredits, setTotalCredits] = useState<number>(0);
   const [activeRegion, setActiveRegion] = useState("India");
   const [globalError, setGlobalError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const [aiLoading, setAiLoading] = useState(false);
 
   // --- API HANDLER ---
   const handleSearch = async (e: React.FormEvent) => {
@@ -59,6 +63,37 @@ export default function Home() {
   };
 
   const currentData = results.find((r) => r.country === activeRegion);
+
+  const handleTriggerAI = async () => {
+    if (!currentData || !topic) return;
+
+    setAiLoading(true);
+    try {
+      const response = await fetch("/api/research-agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic,
+          existingData: currentData
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setGlobalError("AI Blueprint Error: " + data.error);
+      } else {
+        localStorage.setItem("research_instructions", JSON.stringify(data.instructions));
+        localStorage.setItem("research_topic", topic);
+        router.push("/writing-agent");
+      }
+    } catch (err) {
+      console.error(err);
+      setGlobalError("Failed to trigger AI Agent.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen p-6 md:p-12 max-w-7xl mx-auto space-y-16 selection:bg-purple-500/30">
@@ -138,20 +173,31 @@ export default function Home() {
             {/* Global Roundup Section */}
             {globalNews.length > 0 && <ResultsSummary globalNews={globalNews} />}
 
-            {/* Region Switcher Tabs */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {results.map((r) => (
-                <button
-                  key={r.country}
-                  onClick={() => setActiveRegion(r.country)}
-                  className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all border ${activeRegion === r.country
-                    ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                    : "bg-slate-900/50 text-slate-500 border-white/5 hover:border-white/20 hover:text-slate-300"
-                    }`}
-                >
-                  {r.country}
-                </button>
-              ))}
+            {/* Region Switcher Tabs + Trigger Button */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-900/40 p-6 rounded-[2rem] border border-white/5 backdrop-blur-xl">
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                {results.map((r) => (
+                  <button
+                    key={r.country}
+                    onClick={() => setActiveRegion(r.country)}
+                    className={`px-6 py-2.5 rounded-xl text-sm font-black transition-all border ${activeRegion === r.country
+                      ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                      : "bg-slate-900/50 text-slate-500 border-white/5 hover:border-white/20 hover:text-slate-300"
+                      }`}
+                  >
+                    {r.country}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleTriggerAI}
+                disabled={aiLoading || !currentData}
+                className="w-full md:w-auto bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-10 py-4 rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_20px_40px_rgba(6,182,212,0.2)] flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {aiLoading ? <Activity className="w-5 h-5 animate-spin" /> : <Brain className="w-5 h-5" />}
+                {aiLoading ? "GENERATING BLUEPRINT..." : "TRIGGER AI BLOG AGENT"}
+              </button>
             </div>
 
             {/* 🟢 DYNAMIC RESEARCH MODULE (Plug-and-Play) 🟢 */}

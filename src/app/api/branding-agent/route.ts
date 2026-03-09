@@ -1,54 +1,54 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+// Support separate API key for branding, fallback to main key
+const GEMINI_API_KEY = process.env.BRANDING_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
+const MODEL_NAME = process.env.BRANDING_MODEL || "gemini-1.5-pro"; // Fallback if gemini-3 is not standard
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 export async function POST(request: Request) {
     if (!GEMINI_API_KEY) {
-        return NextResponse.json({ error: "Missing Gemini API Key. Please add it to your .env.local" }, { status: 500 });
+        return NextResponse.json({ error: "Missing Branding Gemini API Key." }, { status: 500 });
     }
 
     try {
-        const { blog_content, target_tone } = await request.json();
+        const { blog_content } = await request.json();
 
         if (!blog_content) {
             return NextResponse.json({ error: "Blog content is required" }, { status: 400 });
         }
 
-        // 3. Use Gemini to match generated blog and score it (1-100)
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        // 3. Use Gemini 3 to match generated blog and score it
+        const model = genAI.getGenerativeModel({ model: MODEL_NAME }); // Using 1.5 Pro as placeholder for 'gemini-3'
 
         const prompt = `
-            Rate the following blog article on a scale of 1 to 100 based on its brand tone and alignment with the target reference: "https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health".
+            Rate this blog on a scale 1-100 for brand alignment (Empathetic, Nurturing, Professional).
+            Reference: https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health
             
-            Target Tone to match: Empathetic, Nurturing, Informative, Professional, Supportive, Reassuring. 
+            Blog:
+            ${blog_content.slice(0, 2000)} // Slice to save tokens
             
-            Blog Article:
-            ${blog_content}
+            JSON Output:
+            - score (0-100)
+            - feedback (one sentence)
+            - strengths (list)
+            - weaknesses (list)
             
-            Provide the following in JSON format:
-            - score: A number between 1 and 100.
-            - feedback: A short explanation of the score.
-            - strengths: What worked well.
-            - weaknesses: Areas for improvement.
-            
-            Output ONLY the JSON object.
+            Output ONLY valid JSON.
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         let text = response.text();
 
-        // Clean up markdown if present
         text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
         let analysis;
         try {
             analysis = JSON.parse(text);
         } catch (e) {
-            console.error("Failed to parse JSON from Gemini:", text);
+            console.error("Failed to parse JSON:", text);
             analysis = { raw_output: text };
         }
 
@@ -62,3 +62,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to analyze blog for branding", details: error.message }, { status: 500 });
     }
 }
+

@@ -7,10 +7,10 @@ import { Brain, PenTool, ShieldCheck, Home } from "lucide-react";
 
 const navItems = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Research Agent", href: "/research-agent", icon: Brain },
     { name: "Writing Agent", href: "/writing-agent", icon: PenTool },
     { name: "Branding Agent", href: "/branding-agent", icon: ShieldCheck },
 ];
+
 
 export default function Navbar() {
     const pathname = usePathname();

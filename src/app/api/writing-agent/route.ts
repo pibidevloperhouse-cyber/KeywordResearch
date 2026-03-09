@@ -11,17 +11,13 @@ export async function POST(request: Request) {
         }
 
         const prompt = `
-            You are a professional blog writer. Your task is to write a high-quality blog post based on the following instructions:
+            You are a professional blog writer (Mistral 7B).
+            Task: Write a blog post based on these instructions.
+            Instructions: ${JSON.stringify(instructions).slice(0, 1500)} // Slice to save tokens
             
-            Instructions:
-            ${JSON.stringify(instructions, null, 2)}
-            
-            IMPORTANT: Follow the tone and formatting of "https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health".
-            - Tone: Empathetic, Nurturing, Informative, Professional, Supportive, Reassuring.
-            - Structure: Clear headings (H1, H2, H3), bullet points for signs/symptoms/challenges, tables for complex data or remedies.
-            - Focus: Provide actionable insights for parents/readers.
-            - Language: Use supportive language like "Parenting becomes easier when we understand, not judge."
-            - Formatting: Use Markdown for headers, bold text for key terms, and standard bulleted lists. Use a table if relevant (e.g., Issue vs Remedy).
+            Style Reference: https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health
+            - Tone: Empathetic, Nurturing, Informative.
+            - Format: H1, H2, H3, bullets, tables for remedies.
             
             Write the complete blog post now.
         `;
@@ -32,9 +28,9 @@ export async function POST(request: Request) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: "mistral", // Assuming Mistral 7B is named 'mistral' in Ollama
+                model: "mistral", // Mistral 7B
                 messages: [
-                    { role: "system", content: "You are a professional blog writer specializing in empathetic and informative content." },
+                    { role: "system", content: "You are an empathetic professional blog writer." },
                     { role: "user", content: prompt }
                 ],
                 temperature: 0.7,
@@ -60,3 +56,4 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to generate blog content", details: error.message }, { status: 500 });
     }
 }
+
