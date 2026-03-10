@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Activity, Brain } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// Professional Research Components (Plug-and-Play)
-import AdSense from "@/components/AdSense";
 import ResultsSummary from "@/components/research/ResultsSummary";
 import KeywordResearchUI from "@/components/research/KeywordResearchUI";
 
@@ -127,10 +125,7 @@ export default function Home() {
         )}
       </motion.div>
 
-      {/* 🟢 AD UNIT (TOP) */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
-        <AdSense adSlot="1234567890" adFormat="horizontal" className="min-h-[90px] rounded-3xl overflow-hidden glass shadow-2xl" />
-      </motion.div>
+
 
       {/* 🟢 SEARCH INPUT SECTION */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto relative z-20 pt-4">
@@ -217,12 +212,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 🟢 AD UNIT (BOTTOM) */}
-      {results.length > 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto pt-16 border-t border-white/5">
-          <AdSense adSlot="1122334455" adFormat="horizontal" className="min-h-[120px] rounded-3xl overflow-hidden" />
-        </motion.div>
-      )}
+
     </main>
   );
 }

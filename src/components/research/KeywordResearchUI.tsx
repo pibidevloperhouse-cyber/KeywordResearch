@@ -1,6 +1,6 @@
 "use client";
 
-import AdSense from "@/components/AdSense";
+
 import PrimaryKeywords from "./PrimaryKeywords";
 import ContextKeywords from "./ContextKeywords";
 import Competitors from "./Competitors";
@@ -45,14 +45,7 @@ export default function KeywordResearchUI({ data }: KeywordResearchUIProps) {
                 {/* Module 4: People Also Ask */}
                 <PeopleAlsoAsk questions={data.paa_questions} />
 
-                {/* PLUG-IN: In-Content Advertisement */}
-                <div className="md:col-span-2 py-4">
-                    <AdSense
-                        adSlot="0987654321"
-                        adFormat="horizontal"
-                        className="min-h-[120px] flex items-center justify-center rounded-3xl overflow-hidden border border-white/5 bg-slate-900/30"
-                    />
-                </div>
+
 
                 {/* Module 5: Paid Ads */}
                 <PaidAds ads={data.ads} />
