@@ -45,7 +45,7 @@ export default function BrandingAgentPage() {
             }
         } catch (err: any) {
             console.error(err);
-            setError("Connectivity issue or server error. Check your OpenAI API key.");
+            setError("Connectivity issue or server error. Check your Groq API key.");
         } finally {
             setLoading(false);
         }
@@ -73,7 +73,7 @@ export default function BrandingAgentPage() {
                         Branding <span className="text-emerald-500 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Agent.</span>
                     </h1>
                     <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium">
-                        Evaluating brand alignment and tone consistency using OpenAI GPT-4o Mini.
+                        Evaluating brand alignment and tone consistency using Llama 3 via Groq.
                     </p>
                 </motion.div>
 

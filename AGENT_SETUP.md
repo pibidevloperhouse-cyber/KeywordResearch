@@ -4,9 +4,9 @@ This project now features a multi-agent AI pipeline for blog content generation.
 
 ## 🛠️ Components
 
-1.  **Research Agent (Gemini 2.5 Flash)**: Analyzes search data (via SerpAPI) and generates a structured writing blueprint.
+1.  **Research Agent (Llama 3 via Groq)**: Analyzes search data (via SerpAPI) and generates a structured writing blueprint.
 2.  **Writing Agent (Llama 3 70B via Groq)**: Authors the blog post based on research instructions, following the tone of the reference blog (empathetic, informative, professional).
-3.  **Branding Agent (OpenAI GPT-4o Mini)**: Evaluates the blog's brand alignment and providing a score (1-100).
+3.  **Branding Agent (Llama 3 via Groq)**: Evaluates the blog's brand alignment and providing a score (1-100).
 
 ## 🚀 How to Run
 
@@ -14,10 +14,10 @@ This project now features a multi-agent AI pipeline for blog content generation.
 Ensure your `.env.local` contains the following:
 ```env
 SERPAPI_KEY=your_serpapi_key
-GEMINI_API_KEY=your_gemini_api_key
-OPENAI_API_KEY=your_openai_api_key
 GROQ_API_KEY=your_groq_api_key
-WRITING_MODEL=llama3-70b-8192
+OPENAI_API_KEY=your_openai_api_key
+RESEARCH_MODEL=llama-3.3-70b-versatile
+WRITING_MODEL=llama-3.3-70b-versatile
 ```
 
 ### 2. Groq Setup

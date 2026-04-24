@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getJson } from 'serpapi';
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SERPAPI_KEY = process.env.SERPAPI_KEY;
-// Support separate API key for research, fallback to main key
-const genAI = (key: string) => new GoogleGenerativeAI(key);
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(request: Request) {
-    const GEMINI_API_KEY = process.env.RESEARCH_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
-    const MODEL_NAME = process.env.RESEARCH_MODEL || "gemini-1.5-flash";
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    const MODEL_NAME = process.env.RESEARCH_MODEL || "llama-3.3-70b-versatile";
 
-    if (!GEMINI_API_KEY) {
-        return NextResponse.json({ error: "Missing Research Gemini API Key." }, { status: 500 });
+    if (!GROQ_API_KEY) {
+        return NextResponse.json({ error: "Missing Groq API Key (GROQ_API_KEY)." }, { status: 500 });
     }
 
     try {
@@ -59,10 +57,7 @@ export async function POST(request: Request) {
             };
         }
 
-        // 2. Use Gemini 1.5 Flash to analyze research output
-        const client = genAI(GEMINI_API_KEY);
-        const model = client.getGenerativeModel({ model: MODEL_NAME });
-
+        // 2. Use Groq (Llama 3) to analyze research output
         const prompt = `
             Analyze research for: "${topic}".
             Data: ${JSON.stringify(contextData)}
@@ -77,11 +72,30 @@ export async function POST(request: Request) {
             Output ONLY valid JSON. Keep it concise to save tokens.
         `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
+        const groqResponse = await fetch(GROQ_API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${GROQ_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: MODEL_NAME,
+                messages: [
+                    { role: "system", content: "You are a helpful research assistant that outputs ONLY valid JSON." },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.1, // Lower temperature for more consistent JSON
+                response_format: { type: "json_object" }
+            }),
+        });
 
-        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        if (!groqResponse.ok) {
+            const errorText = await groqResponse.text();
+            throw new Error(`Groq API Error: ${errorText}`);
+        }
+
+        const data = await groqResponse.json();
+        const text = data.choices?.[0]?.message?.content || "{}";
 
         let instructions;
         try {

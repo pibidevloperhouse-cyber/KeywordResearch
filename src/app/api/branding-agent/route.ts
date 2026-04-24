@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(request: Request) {
-    const MODEL_NAME = process.env.BRANDING_MODEL || "gpt-4o-mini";
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    const MODEL_NAME = process.env.BRANDING_MODEL || "llama-3.3-70b-versatile";
 
-    if (!process.env.OPENAI_API_KEY) {
-        return NextResponse.json({ error: "Missing OpenAI API Key." }, { status: 500 });
+    if (!GROQ_API_KEY) {
+        return NextResponse.json({ error: "Missing Groq API Key (GROQ_API_KEY)." }, { status: 500 });
     }
 
     try {
@@ -24,7 +22,7 @@ export async function POST(request: Request) {
             Reference: https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health
             
             Blog:
-            ${blog_content.slice(0, 4000)} // Increased slice size for 4o-mini
+            ${blog_content.slice(0, 4000)}
             
             JSON Output:
             - score (0-100)
@@ -35,17 +33,30 @@ export async function POST(request: Request) {
             Output ONLY valid JSON.
         `;
 
-        const response = await openai.chat.completions.create({
-            model: MODEL_NAME,
-            messages: [
-                { role: "system", content: "You are a branding expert specializing in brand alignment analysis." },
-                { role: "user", content: prompt }
-            ],
-            response_format: { type: "json_object" },
-            temperature: 0.7,
+        const groqResponse = await fetch(GROQ_API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${GROQ_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: MODEL_NAME,
+                messages: [
+                    { role: "system", content: "You are a branding expert specializing in brand alignment analysis. Output ONLY valid JSON." },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.1,
+                response_format: { type: "json_object" }
+            }),
         });
 
-        const text = response.choices[0].message.content || "{}";
+        if (!groqResponse.ok) {
+            const errorText = await groqResponse.text();
+            throw new Error(`Groq API Error: ${errorText}`);
+        }
+
+        const data = await groqResponse.json();
+        const text = data.choices?.[0]?.message?.content || "{}";
 
         let analysis;
         try {
@@ -65,4 +76,5 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to analyze blog for branding", details: error.message }, { status: 500 });
     }
 }
+
 
