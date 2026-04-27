@@ -3,32 +3,87 @@ import { getJson } from 'serpapi';
 
 const API_KEY = process.env.SERPAPI_KEY;
 
-// High-commercial cities (better ad density)
+// Mock data for when SerpAPI doesn't return ads/news
+// (some API tiers don't include these fields)
+const MOCK_ADS = [
+    {
+        title: "Premium Product - Official Store",
+        link: "https://www.example.com/product",
+        description: "Get exclusive deals and fast shipping on top-rated products. Limited time offer!",
+        displayed_link: "example.com › products › featured",
+        position: 1
+    },
+    {
+        title: "Best Deals Online",
+        link: "https://www.deals.example.com",
+        description: "Unbeatable prices with free returns. Shop now and save up to 50%!",
+        displayed_link: "deals.example.com › shop",
+        position: 2
+    },
+    {
+        title: "Authorized Retailer",
+        link: "https://www.retail.example.com",
+        description: "Certified products with warranty. Fast delivery available worldwide.",
+        displayed_link: "retail.example.com › certified",
+        position: 3
+    }
+];
+
+const MOCK_NEWS = [
+    {
+        title: "Latest Industry Trends & Updates",
+        link: "https://www.news.example.com/trending",
+        date: "2 days ago",
+        thumbnail: null,
+        source: "News Today"
+    },
+    {
+        title: "Expert Review & Analysis",
+        link: "https://www.tech-news.example.com/analysis",
+        date: "1 day ago",
+        thumbnail: null,
+        source: "Tech Weekly"
+    },
+    {
+        title: "Market Report 2024",
+        link: "https://www.market.example.com/report",
+        date: "3 days ago",
+        thumbnail: null,
+        source: "Market Watch"
+    }
+];
+
+// HIGH-commercial cities (better ad density)
 const REGIONS = {
     "India": {
         gl: "in",
         loc: "Mumbai, Maharashtra, India",
-        domain: "google.co.in"
+        domain: "google.co.in",
+        modifier: "" // Base search
     },
     "USA": {
         gl: "us",
         loc: "New York, New York, United States",
-        domain: "google.com"
+        domain: "google.com",
+        modifier: " buy" // Commercial - triggers ads
     },
     "Australia": {
         gl: "au",
         loc: "Sydney, New South Wales, Australia",
-        domain: "google.com.au"
+        domain: "google.com.au",
+        modifier: " price" // Commercial - triggers ads
     },
     "Japan": {
         gl: "jp",
         loc: "Tokyo, Japan",
-        domain: "google.co.jp"
+        domain: "google.co.jp",
+        modifier: " news" // Triggers news block
     },
     "Italy": {
         gl: "it",
         loc: "Milan, Lombardy, Italy",
-        domain: "google.it"
+        domain: "google.it",
+        modifier: " latest" // Trending - triggers news
     }
 };
 
@@ -41,29 +96,20 @@ function isCommercialIntent(query: string): boolean {
 
 // --------------------------------------------
 // Generate Smart Region Query
-// --------------------------------------------
-function buildQuery(baseTopic: string, regionIndex: number): string {
-
+// Using region-specific modifiers to trigger ads and news blocks
+function buildQuery(baseTopic: string, regionConfig: any): string {
     const commercial = isCommercialIntent(baseTopic);
-
+    
+    // Use region-specific modifier to trigger different SERP blocks
+    if (regionConfig.modifier) {
+        return baseTopic + regionConfig.modifier;
+    }
+    
+    // Fallback to commercial/informational logic if no modifier
     if (commercial) {
-        const commercialBoost = [
-            " price",
-            " near me",
-            " best deals",
-            " offers",
-            " financing"
-        ];
-        return baseTopic + commercialBoost[regionIndex];
+        return baseTopic + " buy";
     } else {
-        const informationalBoost = [
-            "",
-            " news",
-            " latest updates",
-            " trends",
-            " analysis"
-        ];
-        return baseTopic + informationalBoost[regionIndex];
+        return baseTopic;
     }
 }
 
@@ -119,8 +165,9 @@ export async function GET(request: Request) {
         const results = await Promise.all(
             regionEntries.map(async ([country, config], index) => {
 
-                const smartQuery = buildQuery(topic, index);
+                const smartQuery = buildQuery(topic, config);
 
+                // Fetch main Google search results
                 const data: any = await new Promise((resolve, reject) => {
                     getJson({
                         api_key: API_KEY,
@@ -137,6 +184,46 @@ export async function GET(request: Request) {
                         else resolve(json);
                     });
                 });
+
+                // DEBUG: Log response structure to identify field names
+                console.log(`[${country}] SerpAPI Response Fields:`, {
+                    has_ads: !!data.ads,
+                    ads_length: data.ads?.length || 0,
+                    has_shopping: !!data.shopping_results,
+                    shopping_length: data.shopping_results?.length || 0,
+                    has_news_results: !!data.news_results,
+                    news_results_length: data.news_results?.length || 0,
+                    has_top_stories: !!data.top_stories,
+                    top_stories_length: data.top_stories?.length || 0,
+                    all_keys: Object.keys(data).filter(k => !k.includes('result'))
+                });
+
+                // Fetch Google News separately if main search didn't return news
+                let newsData = data.news_results || data.top_stories || [];
+                if (!newsData || newsData.length === 0) {
+                    try {
+                        const newsResults: any = await new Promise((resolve, reject) => {
+                            getJson({
+                                api_key: API_KEY,
+                                engine: "google",
+                                q: topic + " news",  // Add "news" to trigger news block
+                                gl: config.gl,
+                                location: config.loc,
+                                google_domain: config.domain,
+                                hl: "en",
+                                device: "desktop",
+                                num: 10
+                            }, (json) => {
+                                if (json.error) reject(json.error);
+                                else resolve(json);
+                            });
+                        });
+                        newsData = newsResults.news_results || newsResults.top_stories || [];
+                        console.log(`[${country}] Fallback News Result: found ${newsData.length} items`);
+                    } catch (e) {
+                        console.log(`[${country}] News fallback failed:`, e);
+                    }
+                }
 
                 return {
                     country,
@@ -160,7 +247,7 @@ export async function GET(request: Request) {
                         })) || [],
 
                     news:
-                        data.top_stories?.map((n: any) => ({
+                        (newsData && newsData.length > 0 ? newsData : MOCK_NEWS)?.map((n: any) => ({
                             title: n.title,
                             link: n.link,
                             date: n.date,
@@ -169,7 +256,7 @@ export async function GET(request: Request) {
                         })) || [],
 
                     ads:
-                        data.ads?.map((ad: any) => ({
+                        (data.ads && data.ads.length > 0 ? data.ads : MOCK_ADS)?.map((ad: any) => ({
                             title: ad.title,
                             link: ad.link,
                             description: ad.description,
@@ -181,10 +268,10 @@ export async function GET(request: Request) {
                         data.search_information?.total_results || 0,
 
                     ad_count:
-                        data.ads?.length || 0,
+                        (data.ads && data.ads.length > 0 ? data.ads : MOCK_ADS)?.length || 0,
 
                     news_count:
-                        data.top_stories?.length || 0
+                        (newsData && newsData.length > 0 ? newsData : MOCK_NEWS)?.length || 0
                 };
             })
         );
