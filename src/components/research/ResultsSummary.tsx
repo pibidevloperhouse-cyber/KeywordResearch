@@ -27,19 +27,19 @@ export default function ResultsSummary({ globalNews }: ResultsSummaryProps) {
         <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-[2rem] p-10 shadow-[0_0_80px_rgba(34,211,238,0.1)] relative overflow-hidden"
+            className="glass rounded-[2rem] p-6 sm:p-10 shadow-[0_0_80px_rgba(34,211,238,0.1)] relative overflow-hidden"
         >
             {/* Decorative background pulses */}
             <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-[120px] animate-pulse"></div>
             <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] animate-pulse"></div>
 
-            <div className="flex items-center space-x-5 mb-10 relative z-10">
-                <div className="p-4 bg-cyan-500/20 rounded-2xl border border-cyan-500/30 shadow-inner">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-5 mb-10 relative z-10">
+                <div className="p-4 bg-cyan-500/20 rounded-2xl border border-cyan-500/30 shadow-inner shrink-0">
                     <Newspaper className="w-8 h-8 text-cyan-400" />
                 </div>
                 <div>
-                    <h2 className="text-3xl font-black text-white tracking-tight font-outfit uppercase">Global Headlines</h2>
-                    <p className="text-slate-400 font-medium tracking-wide">The fastest-moving search stories across 5 major regions</p>
+                    <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-outfit uppercase">Global Headlines</h2>
+                    <p className="text-slate-400 text-sm sm:text-base font-medium tracking-wide">The fastest-moving search stories across 5 major regions</p>
                 </div>
             </div>
 

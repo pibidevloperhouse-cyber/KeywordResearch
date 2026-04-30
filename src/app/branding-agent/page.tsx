@@ -59,7 +59,7 @@ export default function BrandingAgentPage() {
         <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-emerald-500/30 font-outfit">
 
             {/* 🟢 HERO & SCORING SECTION */}
-            <section className="pt-24 pb-12 px-6 max-w-7xl mx-auto space-y-12">
+            <section className="pt-16 sm:pt-24 pb-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -69,10 +69,10 @@ export default function BrandingAgentPage() {
                         <ShieldCheck className="w-4 h-4" />
                         <span>Agent 03: brand integrity layer</span>
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-200 to-slate-500 leading-tight">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-200 to-slate-500 leading-tight">
                         Branding <span className="text-emerald-500 drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Agent.</span>
                     </h1>
-                    <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium">
+                    <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-medium px-4 sm:px-0">
                         Evaluating brand alignment and tone consistency using Llama 3 via Groq.
                     </p>
                 </motion.div>
@@ -83,9 +83,9 @@ export default function BrandingAgentPage() {
                         <button
                             onClick={handleScore}
                             disabled={loading || !blogContent}
-                            className="bg-white text-slate-950 hover:bg-emerald-500 hover:text-white px-12 py-5 rounded-[1.5rem] font-black transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] active:scale-95 disabled:opacity-50 font-outfit tracking-tight flex items-center gap-4 text-xl"
+                            className="w-full sm:w-auto bg-white text-slate-950 hover:bg-emerald-500 hover:text-white px-8 sm:px-12 py-4 sm:py-5 rounded-[1.2rem] sm:rounded-[1.5rem] font-black transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] active:scale-95 disabled:opacity-50 font-outfit tracking-tight flex items-center justify-center gap-4 text-lg sm:text-xl"
                         >
-                            {loading ? <Loader2 className="animate-spin w-8 h-8" /> : "SCORE BLOG TONE"}
+                            {loading ? <Loader2 className="animate-spin w-6 h-6 sm:w-8 h-8" /> : "SCORE BLOG TONE"}
                             {!loading && <BarChart3 className="w-6 h-6" />}
                         </button>
                     )}
@@ -114,28 +114,28 @@ export default function BrandingAgentPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="pb-24 px-6 max-w-7xl mx-auto"
                     >
-                        <div className="bg-slate-900/40 border border-white/5 rounded-[2.5rem] overflow-hidden p-12 backdrop-blur-3xl shadow-2xl space-y-12">
+                        <div className="bg-slate-900/40 border border-white/5 rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden p-6 sm:p-12 backdrop-blur-3xl shadow-2xl space-y-12">
 
                             {/* Score Display */}
                             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
                                 <div className="relative group">
                                     <div className="absolute -inset-4 bg-emerald-500/20 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
-                                    <div className="relative w-48 h-48 rounded-full border-[8px] border-emerald-500/10 flex flex-col items-center justify-center bg-slate-950 shadow-2xl ring-1 ring-emerald-500/30">
-                                        <span className="text-6xl font-black text-white">{analysis.score}</span>
-                                        <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest mt-1">Brand Score</span>
+                                    <div className="relative w-32 h-32 sm:w-48 h-48 rounded-full border-[6px] sm:border-[8px] border-emerald-500/10 flex flex-col items-center justify-center bg-slate-950 shadow-2xl ring-1 ring-emerald-500/30">
+                                        <span className="text-4xl sm:text-6xl font-black text-white">{analysis.score}</span>
+                                        <span className="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase tracking-widest mt-1">Brand Score</span>
                                     </div>
                                 </div>
 
                                 <div className="flex-1 space-y-6">
-                                    <div className="space-y-2">
-                                        <div className="flex items-center gap-3 text-emerald-400 font-bold tracking-widest text-xs uppercase">
+                                    <div className="space-y-2 text-center md:text-left">
+                                        <div className="flex items-center justify-center md:justify-start gap-3 text-emerald-400 font-bold tracking-widest text-[10px] sm:text-xs uppercase">
                                             <Star className="w-4 h-4" />
                                             <span>Analysis Insights</span>
                                         </div>
-                                        <h2 className="text-3xl font-black text-white italic">"{analysis.feedback || 'Success'}"</h2>
+                                        <h2 className="text-xl sm:text-3xl font-black text-white italic">"{analysis.feedback || 'Success'}"</h2>
                                     </div>
 
-                                    <p className="text-slate-400 leading-relaxed text-lg">
+                                    <p className="text-slate-400 leading-relaxed text-base sm:text-lg text-center md:text-left">
                                         The brand alignment agent has verified the tone against the reference profile. Your content reflects the necessary empathy and professional depth required for this brand.
                                     </p>
                                 </div>
@@ -143,10 +143,10 @@ export default function BrandingAgentPage() {
                                 <div className="w-full md:w-auto">
                                     <button
                                         onClick={restartProcess}
-                                        className="w-full bg-slate-950 border border-white/10 hover:bg-white hover:text-slate-950 text-white px-8 py-4 rounded-[1.2rem] font-black transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-4 group"
+                                        className="w-full bg-slate-950 border border-white/10 hover:bg-white hover:text-slate-950 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-[1rem] sm:rounded-[1.2rem] font-black transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 sm:gap-4 group text-sm sm:text-base"
                                     >
                                         NEW RESEARCH PHASE
-                                        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
+                                        <ArrowLeft className="w-4 h-4 sm:w-5 h-5 group-hover:-translate-x-2 transition-transform" />
                                     </button>
                                 </div>
                             </div>

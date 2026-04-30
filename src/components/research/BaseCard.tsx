@@ -23,7 +23,7 @@ export default function BaseCard({ title, icon, children, delay = 0 }: BaseCardP
             className="glass rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/5 transition-all group flex flex-col h-full"
         >
             {/* Header Section */}
-            <div className="px-6 py-5 border-b border-white/5 flex items-center space-x-4 bg-white/5">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-white/5 flex items-center space-x-4 bg-white/5">
                 <div className="p-2.5 bg-slate-800/80 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
                     {icon}
                 </div>
@@ -31,7 +31,7 @@ export default function BaseCard({ title, icon, children, delay = 0 }: BaseCardP
             </div>
 
             {/* Content Section */}
-            <div className="p-6 flex-1">
+            <div className="p-4 sm:p-6 flex-1">
                 {children}
             </div>
         </motion.div>
