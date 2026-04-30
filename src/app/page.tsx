@@ -139,7 +139,7 @@ export default function Home() {
                 placeholder="What do you want to research?"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                className="w-full bg-transparent border-none focus:ring-0 text-white placeholder-slate-600 text-lg sm:text-2xl px-3 sm:px-5 py-3 sm:py-4 font-semibold font-outfit"
+                className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-white placeholder-slate-600 text-lg sm:text-2xl px-3 sm:px-5 py-3 sm:py-4 font-semibold font-outfit"
                 disabled={loading}
               />
             </div>
